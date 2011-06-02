@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <ui:composition template="/templates/templateMaster.xhtml">
+        <ui:define name="content">
+            <f:facet name="header">
+                <h:outputText value="Cadastro de Tarefa"/>
+            </f:facet>
+            <h:panelGrid columns="3">
+                <h:inputHidden id="id" value="#{tarefaController.tarefa.id}" />
+                <h:outputText value="Colaborador:"/>
+                <rich:select id="colaborador" value="#{tarefaController.tarefa.colaborador}" converter="#{colaboradorConverter}">
+                    <f:selectItems value="#{tarefaController.colaboradores}" var="colaborador" itemLabel="#{colaborador.nome}" itemValue="#{colaborador.nome}"/> 
+                </rich:select>
+                <rich:message for="colaborador"/>
+
+                <h:outputText value="Projeto:"/>
+                <rich:select id="projeto" value="#{tarefaController.tarefa.projeto}" converter="#{projetoConverter}">
+                    <f:selectItems value="#{tarefaController.projetos}" var="projeto" itemLabel="#{projeto.nome}" itemValue="#{projeto.nome}"/> 
+                </rich:select>
+                <rich:message for="projeto"/>
+
+                <h:outputText value="Descrição:"/>
+                <h:inputText id="descricao" value="#{tarefaController.tarefa.descricao}" required="true" requiredMessage="O campo deve ser preenchido" size="50"/>
+                <rich:message for="descricao"/>
+
+                <h:outputText value="Obs:"/>
+                <h:inputTextarea id="obs" rows="3" cols="50"  value="#{tarefaController.tarefa.obs}"/>
+                <rich:message for="obs"/>
+                
+                <h:commandButton value="Salvar" actionListener="#{tarefaController.salvar}"/>
+                <h:commandButton value="Limpar" type="reset"/>
+            </h:panelGrid>
+        </ui:define>
+    </ui:composition>
+</html>
+
+

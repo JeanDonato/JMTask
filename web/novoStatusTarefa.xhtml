@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <ui:composition template="/templates/templateMaster.xhtml">
+        <ui:define name="content">
+            <f:facet name="header">
+                <h:outputText value="Cadastro de Tarefa"/>
+            </f:facet>
+            <h:panelGrid columns="3">
+                <h:inputHidden id="id" value="#{tarefaController.tarefa.id}" />
+
+                <h:outputText value="Status:"/>
+                <rich:select id="status" value="#{tarefaController.tarefa.status}">
+                    <f:selectItem itemValue="1" itemLabel="Em Andamento"/> 
+                    <f:selectItem itemValue="2" itemLabel="Aguardando Retorno"/> 
+                    <f:selectItem itemValue="3" itemLabel="Finalizada"/> 
+                    <f:selectItem itemValue="4" itemLabel="Cancelada"/> 
+                </rich:select>
+                <rich:message for="status"/>
+
+                <h:outputText value="Descrição:"/>
+                <h:inputText id="descricao" value="#{tarefaController.tarefa.descricao}" required="true" requiredMessage="O campo deve ser preenchido" size="50"/>
+                <rich:message for="descricao"/>
+
+                <h:outputText value="Obs:"/>
+                <h:inputTextarea id="obs" rows="3" cols="50"  value="#{tarefaController.tarefa.obs}"/>
+                <rich:message for="obs"/>
+
+                <h:outputText value="Log:"/>
+                <h:inputTextarea id="log" rows="3" cols="50"  value="#{tarefaController.logTarefa.log}" required="true" requiredMessage="É necessário escrever um Log ao alterar o Status."/>
+                <rich:message for="log"/>
+
+                <h:commandButton value="Salvar" actionListener="#{tarefaController.salvar}"/>
+                <h:commandButton value="Limpar" type="reset"/>
+            </h:panelGrid>
+        </ui:define>
+    </ui:composition>
+</html>

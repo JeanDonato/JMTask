@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Project" version="2">
+    <Scope Scope="Faces Configuration Only"/>
+    <Scope Scope="Project">
+        <Node id="templates/templateMaster.xhtml" x="400" y="150" zoom="true"/>
+        <Node id="templates/header.xhtml" x="650" y="150" zoom="true"/>
+        <Node id="listProjeto.xhtml" x="900" y="150" zoom="true"/>
+        <Node id="jdPickList.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="index.xhtml" x="150" y="150" zoom="true"/>
+        <Node id="listColaborador.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="tarefa.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="colaborador.xhtml" x="400" y="300" zoom="true"/>
+        <Node id="projeto.xhtml" x="150" y="300" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>
