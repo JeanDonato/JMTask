@@ -4,19 +4,17 @@
  */
 package br.com.jmtask.controller;
 
+import br.com.jmtask.dao.ColaboradorDao;
 import br.com.jmtask.entity.Colaborador;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Query;
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
 
 /**
  *
@@ -26,12 +24,12 @@ import javax.transaction.UserTransaction;
 @RequestScoped
 public class ColaboradorController implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
-    @Resource
-    UserTransaction ut;
+    @Inject
+    private ColaboradorDao colaboradorDao;
     private Colaborador colaborador;
+    private Colaborador colaboradorPesquisa;
     private List<Colaborador> colaboradores;
+    String mensagem = "";
 
     public Colaborador getColaborador() {
         if (colaborador == null) {
@@ -44,30 +42,20 @@ public class ColaboradorController implements Serializable {
         this.colaborador = colaborador;
     }
 
-    public EntityManager getEm() {
-        return em;
-    }
-
-    public void setEm(EntityManager em) {
-        this.em = em;
-    }
-
     public void salvar() {
-        String mensagem = "";
         try {
-            ut.begin();
             if (colaborador.getId() == null) {
                 if (!existeColaborador(colaborador.getNome())) {
-                    em.persist(colaborador);
+                    colaboradorDao.salvar(colaborador);
                     mensagem = "Colaborador Salvo com Sucesso!";
                 } else {
                     mensagem = "Já existe Colaborador(es) cadastrado(s) com esse nome no sistema!";
                 }
             } else {
-                em.merge(colaborador);
+                colaboradorDao.atualizar(colaborador);
                 mensagem = "Colaborador Atualizado com Sucesso!";
             }
-            ut.commit();
+
             colaborador = new Colaborador();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
         } catch (Exception e) {
@@ -76,14 +64,12 @@ public class ColaboradorController implements Serializable {
     }
 
     public List<Colaborador> getColaboradores() {
-        Query query = em.createNamedQuery("Colaborador.findAll");
-        colaboradores = query.getResultList();
+        colaboradores = colaboradorDao.getColaboradores();
         return colaboradores;
     }
 
     public List<Colaborador> getColaboradores(Long idProjeto) {
-        Query query = em.createNamedQuery("Colaborador.findAll");
-        colaboradores = query.getResultList();
+        colaboradores = colaboradorDao.getColaboradores(idProjeto);
         return colaboradores;
     }
 
@@ -92,36 +78,24 @@ public class ColaboradorController implements Serializable {
     }
 
     public void removerColaborador(Colaborador colaborador) {
-        try {
-            ut.begin();
-            em.remove(em.getReference(Colaborador.class, colaborador.getId()));
-            ut.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+        boolean colaboradortemTarefa = colaboradorDao.colaboradorTemTarefa(colaborador);
+        if (colaboradortemTarefa) {
+            mensagem = "Colaborador não pode ser removido, pois possui tarefa(s)";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
+        } else {
+            colaboradorDao.remover(colaborador);
         }
         getColaboradores();
     }
 
     public Colaborador findByNome(String nomeColaborador) {
-        Query query = em.createNamedQuery("Colaborador.verifColaborador");
-        query.setParameter("nomeColaborador", nomeColaborador);
-        try {
-            colaborador = (Colaborador) query.getSingleResult();
-        } catch (NoResultException nre) {
-            nomeColaborador = "";
-        }
-        return colaborador;
+        colaboradorPesquisa = colaboradorDao.findByNome(nomeColaborador);
+        return colaboradorPesquisa;
     }
 
     public boolean existeColaborador(String nomeColaborador) {
-        Query query = em.createNamedQuery("Colaborador.verifColaborador");
-        query.setParameter("nomeColaborador", nomeColaborador);
-        try {
-            colaborador = (Colaborador) query.getSingleResult();
-        } catch (NoResultException nre) {
-            nomeColaborador = "";
-        }
-        if (!nomeColaborador.equals("")) {
+        colaboradorPesquisa = findByNome(nomeColaborador);
+        if (colaboradorPesquisa != null) {
             return true;
         } else {
             return false;
