@@ -5,6 +5,7 @@
 package br.com.jmtask.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -29,6 +32,8 @@ public class LogTarefa implements Serializable {
     @OneToOne
     private Tarefa tarefa;
     private String log;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataLog;
 
     public Long getId() {
         return id;
@@ -55,6 +60,17 @@ public class LogTarefa implements Serializable {
 
     public void setTarefa(Tarefa tarefa) {
         this.tarefa = tarefa;
+    }
+
+    public Date getDataLog() {
+        return dataLog;
+    }
+
+    public void setDataLog(Date dataLog) {
+        if (id == null && dataLog == null) {
+            dataLog = new Date();
+        }
+        this.dataLog = dataLog;
     }
 
     @Override

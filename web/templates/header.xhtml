@@ -8,7 +8,7 @@
       xmlns:rich="http://richfaces.org/rich">
     <center>
         <h:form>
-            <h:commandLink  action="/index.jsf">
+            <h:commandLink  action="index">
                 <h:graphicImage url="/img/barraSup.png"/>
             </h:commandLink>
             <rich:toolbar width="900">
@@ -19,12 +19,12 @@
                         </h:panelGroup>
                     </f:facet>
                     <rich:menuGroup label="Colaboradores">
-                        <rich:menuItem label="Cadastrar" action="/colaborador.jsf"/>
-                        <rich:menuItem label="Listar" action="/listColaborador.jsf"/>
+                        <rich:menuItem label="Cadastrar" action="colaborador"/>
+                        <rich:menuItem label="Listar" action="listColaborador"/>
                     </rich:menuGroup>
                     <rich:menuGroup label="Projetos">
-                        <rich:menuItem label="Cadastrar" action="/projeto.jsf"/>
-                        <rich:menuItem label="Listar" action="/listProjeto.jsf"/>
+                        <rich:menuItem label="Cadastrar" action="projeto"/>
+                        <rich:menuItem label="Listar" action="listProjeto"/>
                     </rich:menuGroup>
                 </rich:dropDownMenu>
                 <rich:dropDownMenu>
@@ -34,8 +34,8 @@
                         </h:panelGroup>
                     </f:facet>
                     <rich:menuGroup label="Tarefas">
-                        <rich:menuItem label="Cadastrar" action="/tarefa.jsf"/>
-                        <rich:menuItem label="Listar" action="/listTarefa.jsf"/>
+                        <rich:menuItem label="Cadastrar" action="tarefa"/>
+                        <rich:menuItem label="Listar" action="listTarefa"/>
                     </rich:menuGroup>
                 </rich:dropDownMenu>
             </rich:toolbar>

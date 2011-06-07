@@ -13,8 +13,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.Query;
-import javax.persistence.NoResultException;
 
 /**
  *
@@ -55,7 +53,6 @@ public class ColaboradorController implements Serializable {
                 colaboradorDao.atualizar(colaborador);
                 mensagem = "Colaborador Atualizado com Sucesso!";
             }
-
             colaborador = new Colaborador();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
         } catch (Exception e) {

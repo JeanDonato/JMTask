@@ -17,14 +17,14 @@ import javax.inject.Named;
  * @author jeandonato
  */
 @Named
-public class ProjetoConverter implements Converter{
+public class ProjetoConverter implements Converter {
 
     @Inject
     ProjetoController projetoController;
-    
+
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-           if (value == null) {
+        if (value == null) {
             return null;
         }
         try {
@@ -48,5 +48,4 @@ public class ProjetoConverter implements Converter{
         }
 
     }
-    
 }

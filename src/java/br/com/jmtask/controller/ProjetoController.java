@@ -4,21 +4,16 @@
  */
 package br.com.jmtask.controller;
 
+import br.com.jmtask.dao.ProjetoDao;
 import br.com.jmtask.entity.Colaborador;
 import br.com.jmtask.entity.Projeto;
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.Query;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
 
 /**
  *
@@ -28,14 +23,14 @@ import javax.transaction.UserTransaction;
 @RequestScoped
 public class ProjetoController implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
-    @Resource
-    UserTransaction ut;
     private Projeto projeto;
+    private Projeto projetoPesquisa;
     private List<Projeto> projetos;
     @Inject
     ColaboradorController colaboradorController;
+    @Inject
+    ProjetoDao projetoDao;
+    String mensagem = "";
 
     public Projeto getProjeto() {
         if (projeto == null) {
@@ -54,26 +49,15 @@ public class ProjetoController implements Serializable {
         this.projeto = projeto;
     }
 
-    public EntityManager getEm() {
-        return em;
-    }
-
-    public void setEm(EntityManager em) {
-        this.em = em;
-    }
-
     public void salvar() {
-        String mensagem = "";
         try {
-            ut.begin();
             if (projeto.getId() == null) {
-                em.persist(projeto);
+                projetoDao.salvar(projeto);
                 mensagem = "Projeto Salvo com Sucesso!";
             } else {
-                em.merge(projeto);
+                projetoDao.atualizar(projeto);
                 mensagem = "Projeto Atualizado com Sucesso!";
             }
-            ut.commit();
             projeto = new Projeto();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
         } catch (Exception e) {
@@ -82,8 +66,7 @@ public class ProjetoController implements Serializable {
     }
 
     public List<Projeto> getProjetos() {
-        Query query = em.createNamedQuery("Projeto.findAll");
-        projetos = query.getResultList();
+        projetos = projetoDao.getProjetos();
         return projetos;
     }
 
@@ -92,24 +75,18 @@ public class ProjetoController implements Serializable {
     }
 
     public void removerProjeto(Projeto projeto) {
-        try {
-            ut.begin();
-            em.remove(em.getReference(Projeto.class, projeto.getId()));
-            ut.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+        boolean projetotemTarefa = projetoDao.projetoTemTarefa(projeto);
+        if (projetotemTarefa) {
+            mensagem = "Projeto não pode ser removido, pois possui tarefa(s)";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
+        } else {
+            projetoDao.remover(projeto);
         }
         getProjetos();
     }
 
     public Projeto findByNome(String nomeProjeto) {
-        Query query = em.createNamedQuery("Projeto.verifProjeto");
-        query.setParameter("nomeProjeto", nomeProjeto);
-        try {
-            projeto = (Projeto) query.getSingleResult();
-        } catch (NoResultException nre) {
-            nomeProjeto = "";
-        }
-        return projeto;
+        projetoPesquisa = projetoDao.findByNome(nomeProjeto);
+        return projetoPesquisa;
     }
 }

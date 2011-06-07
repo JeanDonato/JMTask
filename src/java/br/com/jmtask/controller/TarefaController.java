@@ -4,22 +4,21 @@
  */
 package br.com.jmtask.controller;
 
+import br.com.jmtask.dao.TarefaDao;
 import br.com.jmtask.entity.Colaborador;
 import br.com.jmtask.entity.LogTarefa;
 import br.com.jmtask.entity.Projeto;
 import br.com.jmtask.entity.Tarefa;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import javax.annotation.Resource;
+import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 
 /**
  *
@@ -29,10 +28,6 @@ import javax.transaction.UserTransaction;
 @RequestScoped
 public class TarefaController implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
-    @Resource
-    UserTransaction ut;
     private Tarefa tarefa;
     private Tarefa tarefaOld = new Tarefa();
     private List<Colaborador> colaboradores;
@@ -44,8 +39,23 @@ public class TarefaController implements Serializable {
     ColaboradorController colaboradorController;
     @Inject
     ProjetoController projetoController;
-    
+    @Inject
+    TarefaDao tarefaDao;
     private Long idDaTarefaSelecionada;
+    Map parametros = new HashMap();
+    String mensagem = "";
+    private boolean tarefaPodeSerEditada;
+
+    public boolean isTarefaPodeSerEditada() {
+        if (!tarefa.getStatus().equals("3")) {
+            setTarefaPodeSerEditada(true);
+        }
+        return tarefaPodeSerEditada;
+    }
+
+    public void setTarefaPodeSerEditada(boolean tarefaPodeSerEditada) {
+        this.tarefaPodeSerEditada = tarefaPodeSerEditada;
+    }
 
     public Long getIdDaTarefaSelecionada() {
         return idDaTarefaSelecionada;
@@ -54,8 +64,7 @@ public class TarefaController implements Serializable {
     public void setIdDaTarefaSelecionada(Long idDaTarefaSelecionada) {
         this.idDaTarefaSelecionada = idDaTarefaSelecionada;
     }
-    
-    
+
     public Tarefa getTarefa() {
         if (tarefa == null) {
             tarefa = new Tarefa();
@@ -81,46 +90,43 @@ public class TarefaController implements Serializable {
         return projetos;
     }
 
-    public EntityManager getEm() {
-        return em;
-    }
-
-    public void setEm(EntityManager em) {
-        this.em = em;
-    }
-
-    public void salvar() {
-        String mensagem = "";
+    public String salvar() {
         try {
-            ut.begin();
             if (tarefa.getId() == null) {
                 tarefa.setStatus("1");
-                em.persist(tarefa);
+                tarefaDao.salvar(tarefa);
                 mensagem = "Tarefa Salva com Sucesso!";
                 tarefa = new Tarefa();
             } else {
+//                setando esses atributos, pois, eles não estão na tela. Assim não veem para o servidor, sendo necessário fazer isso, ou colocar campo hidden na view
                 tarefaOld = getTarefa(tarefa.getId());
                 tarefa.setColaborador(tarefaOld.getColaborador());
                 tarefa.setProjeto(tarefaOld.getProjeto());
-                em.merge(tarefa);
+                tarefa.setDataInicial(tarefaOld.getDataInicial());
+                //se tiver finalizando a tarefa...
+                if (tarefa.getStatus().equals("3")) {
+                    tarefa.setDataFinal(new Date());
+                }
+                tarefaDao.atualizar(tarefa);
+                SalvarLog();
                 mensagem = "Tarefa Atualizada com Sucesso!";
             }
-            ut.commit();
-            if (tarefa.getId() != null) {
-                SalvarLog();
-            }
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
+            getTarefas();
+            return "listaTarefas";
+
         } catch (Exception e) {
             e.printStackTrace();
+            return "";
         }
     }
 
     public void SalvarLog() {
         try {
-            ut.begin();
             logTarefa.setTarefa(tarefa);
-            em.persist(logTarefa);
-            ut.commit();
+            logTarefa.setDataLog(null);
+            tarefaDao.SalvarLog(logTarefa);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,33 +152,27 @@ public class TarefaController implements Serializable {
             }
         }
 
-        Query query = em.createNativeQuery(sqlFiltro, Tarefa.class);
-
         if (tarefa != null) {
             if (tarefa.getStatus() != null) {
-                query.setParameter("status", tarefa.getStatus());
+                parametros.put("status", tarefa.getStatus());
             }
 
             if (tarefa.getColaborador() != null) {
-                query.setParameter("colaborador", tarefa.getColaborador().getId());
+                parametros.put("colaborador", tarefa.getColaborador().getId());
             }
 
             if (tarefa.getProjeto() != null) {
-                query.setParameter("projeto", tarefa.getProjeto().getId());
+                parametros.put("projeto", tarefa.getProjeto().getId());
             }
         }
-
-        tarefas = query.getResultList();
+        tarefas = tarefaDao.getTarefas(sqlFiltro, parametros);
         return tarefas;
-
     }
 
     public List<LogTarefa> getLogsDaTarefaSelecionada() {
         if (tarefa != null) {
             if (tarefa.getId() != null) {
-                Query query = em.createNamedQuery("LogTarefa.findByTarefa");
-                query.setParameter("tarefa", tarefa);
-                logsDaTarefaSelecionada = query.getResultList();
+                logsDaTarefaSelecionada = tarefaDao.getLogsDaTarefaSelecionada(tarefa);
             } else {
                 logsDaTarefaSelecionada = null;
             }
@@ -183,9 +183,7 @@ public class TarefaController implements Serializable {
     }
 
     public Tarefa getTarefa(Long id) {
-        Query query = em.createNamedQuery("Tarefa.findById");
-        query.setParameter("id", id);
-        tarefaOld = (Tarefa) query.getSingleResult();
+        tarefaOld = tarefaDao.getTarefa(id);
         return tarefaOld;
     }
 
@@ -196,7 +194,7 @@ public class TarefaController implements Serializable {
     public String novoStatus() {
         return "/novoStatusTarefa.xhtml";
     }
-    //    public void removerTarefa(Tarefa tarefa) {
+//    public void removerTarefa(Tarefa tarefa) {
 //        try {
 //            ut.begin();
 //            em.remove(em.getReference(Tarefa.class, tarefa.getId()));

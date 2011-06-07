@@ -17,14 +17,14 @@ import javax.inject.Named;
  * @author jeandonato
  */
 @Named
-public class ColaboradorConverter implements Converter{
+public class ColaboradorConverter implements Converter {
 
     @Inject
     ColaboradorController colaboradorController;
-    
+
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-           if (value == null) {
+        if (value == null) {
             return null;
         }
         try {
@@ -48,5 +48,4 @@ public class ColaboradorConverter implements Converter{
         }
 
     }
-    
 }

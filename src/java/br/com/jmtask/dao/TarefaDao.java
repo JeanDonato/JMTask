@@ -8,7 +8,6 @@ import br.com.jmtask.entity.LogTarefa;
 import br.com.jmtask.entity.Tarefa;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -5,12 +5,10 @@
 package br.com.jmtask.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -44,7 +42,6 @@ public class Projeto implements Serializable {
 //    public void setColaboradores(List<Colaborador> colaboradores) {
 //        this.colaboradores = colaboradores;
 //    }
-
 //    public Date getDataFim() {
 //        return dataFim;
 //    }

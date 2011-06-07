@@ -76,9 +76,20 @@
 
                     <rich:column>
                         <f:facet name="header"> 
-                            <h:outputText value="Obs"/>
+                            <h:outputText value="Data Inicial"/>
                         </f:facet>
-                        <h:outputText value="#{tarefas.obs}"/>
+                        <h:outputText value="#{tarefas.dataInicial}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Data Final"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.dataFinal}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
                     </rich:column>
 
                     <rich:column>
@@ -133,6 +144,15 @@
                                 <h:outputText value="Log"/>
                             </f:facet>
                             <h:outputText value="#{tarefas.log}"/>
+                        </rich:column>
+
+                        <rich:column>
+                            <f:facet name="header"> 
+                                <h:outputText value="Data do Log"/>
+                            </f:facet>
+                            <h:outputText value="#{tarefas.dataLog}">
+                                <f:convertDateTime pattern="dd/MM/yyyy  HH:mm" locale="pt,BR" timeZone="America/Sao_Paulo"/>
+                            </h:outputText>
                         </rich:column>
 
                     </rich:dataTable>

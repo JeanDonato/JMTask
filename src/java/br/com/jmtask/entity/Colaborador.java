@@ -21,7 +21,7 @@ import javax.persistence.NamedQueries;
     @NamedQuery(name = "Colaborador.findAll", query = "Select c from Colaborador c"),
     @NamedQuery(name = "Colaborador.verifColaborador", query = "Select c from Colaborador c where c.nome =:nomeColaborador")
 })
-public class Colaborador implements Serializable{
+public class Colaborador implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

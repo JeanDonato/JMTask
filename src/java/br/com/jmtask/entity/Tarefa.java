@@ -5,6 +5,7 @@
 package br.com.jmtask.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -22,6 +25,8 @@ import javax.persistence.Transient;
 @NamedQueries({
     @NamedQuery(name = "Tarefa.findAll", query = "Select t from Tarefa t"),
     @NamedQuery(name = "Tarefa.findById", query = "Select t from Tarefa t where t.id=:id"),
+    @NamedQuery(name = "Tarefa.findByColaborador", query = "Select t from Tarefa t where t.colaborador=:colaborador"),
+    @NamedQuery(name = "Tarefa.findByProjeto", query = "Select t from Tarefa t where t.projeto=:projeto"),
     @NamedQuery(name = "Tarefa.findByStatus", query = "Select t from Tarefa t where t.status=:status")
 })
 public class Tarefa implements Serializable {
@@ -40,6 +45,11 @@ public class Tarefa implements Serializable {
     private String statusDesc;
     @Transient
     private Boolean tarefaEstaFinalizada;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataInicial;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataFinal;
+    private Integer horaEstimada;
 
     public Colaborador getColaborador() {
         return colaborador;
@@ -105,6 +115,33 @@ public class Tarefa implements Serializable {
         } else {
             return "";
         }
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public Date getDataInicial() {
+        if (dataInicial == null && id == null) {
+            dataInicial = new Date();
+        }
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Integer getHoraEstimada() {
+        return horaEstimada;
+    }
+
+    public void setHoraEstimada(Integer horaEstimada) {
+        this.horaEstimada = horaEstimada;
     }
 
     public void setStatusDesc(String statusDesc) {
