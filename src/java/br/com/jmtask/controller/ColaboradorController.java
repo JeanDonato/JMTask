@@ -17,6 +17,8 @@ import javax.inject.Named;
 /**
  *
  * @author jeandonato
+ * 
+ * testando... 1, 2, 3 - lmike
  */
 @Named
 @RequestScoped
