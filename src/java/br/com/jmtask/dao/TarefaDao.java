@@ -17,8 +17,6 @@ import javax.transaction.UserTransaction;
 /**
  *
  * @author jeandonato
- *
- * teste 2
  * 
  */
 public class TarefaDao {
