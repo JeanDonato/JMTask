@@ -4,15 +4,18 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
       xmlns:rich="http://richfaces.org/rich">
 
     <ui:composition template="/templates/templateMaster.xhtml">
+
         <ui:define name="content">
+
             <f:facet name="header">
                 <h:outputText value="Cadastro de Tarefa"/>
             </f:facet>
+
             <h:panelGrid columns="3">
+
                 <h:inputHidden id="id" value="#{tarefaController.tarefa.id}" />
 
                 <h:outputText value="Colaborador:"/>
@@ -36,6 +39,8 @@
                 <rich:message for="obs"/>
 
             </h:panelGrid>
+
         </ui:define>
+
     </ui:composition>
 </html>

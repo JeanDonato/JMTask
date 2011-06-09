@@ -4,11 +4,12 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
       xmlns:rich="http://richfaces.org/rich">
 
     <ui:composition template="/templates/templateMaster.xhtml">
+
         <ui:define name="content">
+
             <rich:dataTable id="colaboradores" value="#{colaboradorController.colaboradores}" var="colaboradores">
 
                 <rich:column>
@@ -34,9 +35,9 @@
                     <h:commandLink value="Remover" action="#{colaboradorController.removerColaborador(colaboradores)}"/>
                 </rich:column>
 
-
-
             </rich:dataTable>
+
         </ui:define> 
+
     </ui:composition>
 </html>

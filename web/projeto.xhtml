@@ -4,29 +4,34 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:a4j="http://richfaces.org/a4j"
       xmlns:rich="http://richfaces.org/rich">
 
     <ui:composition template="/templates/templateMaster.xhtml">
+
         <ui:define name="content">
+
             <f:facet name="header">
                 <h:outputText value="Cadastro de Projetos"/>
             </f:facet>
 
             <h:panelGrid columns="3">
+
                 <h:inputHidden id="id" value="#{projetoController.projeto.id}" />
                 <h:outputText value="Nome:"/>
                 <h:inputText id="nome" value="#{projetoController.projeto.nome}" required="true" requiredMessage="O campo deve ser preenchido"/>
                 <rich:message for="nome"/>
 
-<!--                <h:outputText value="Colaboradores:"/>
-                <h:selectManyListbox id="subscriptions" value="{projetoController.projeto.colaboradores}" converter="{colaboradorConverter}">
-                    <f:selectItems  value="{projetoController.projeto.colaboradores}" var="colaborador" itemValue="{colaborador.nome}" itemLabel="{colaborador.nome}"/>
-                </h:selectManyListbox>-->
-                
+                <!--                <h:outputText value="Colaboradores:"/>
+                                <h:selectManyListbox id="subscriptions" value="{projetoController.projeto.colaboradores}" converter="{colaboradorConverter}">
+                                    <f:selectItems  value="{projetoController.projeto.colaboradores}" var="colaborador" itemValue="{colaborador.nome}" itemLabel="{colaborador.nome}"/>
+                                </h:selectManyListbox>-->
+
                 <h:commandButton value="Salvar" actionListener="#{projetoController.salvar}"/>
+
             </h:panelGrid>
+
         </ui:define>
+
     </ui:composition>
 </html>
 

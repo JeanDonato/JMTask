@@ -8,6 +8,7 @@
       xmlns:rich="http://richfaces.org/rich">
 
     <ui:composition template="/templates/templateMaster.xhtml">
+
         <ui:define name="content">
 
             <h:panelGrid width="900" columns="4">
@@ -33,8 +34,8 @@
                 <a4j:commandButton value="Filtrar" render="panel" execute="statusFiltro,colaboradorFiltro,projetoFiltro"/>
             </h:panelGrid>
 
-
             <a4j:outputPanel id="panel">
+
                 <rich:dataTable id="tarefas" value="#{tarefaController.tarefas}" var="tarefas">
 
                     <rich:column>
@@ -111,15 +112,16 @@
 
                     </rich:column>
 
-
                 </rich:dataTable>
 
-
             </a4j:outputPanel>
+
             <rich:popupPanel id="popup" resizeable="true">
+
                 <f:facet name="header">
                     <h:outputText value="Log(s) da(s) Tarefa(s)" />
                 </f:facet>
+
                 <f:facet name="controls">
                     <h:outputLink value="#"
                                   onclick="#{rich:component('popup')}.hide(); return false;">
@@ -130,6 +132,7 @@
                 <h:outputText value="Tarefa #{tarefaController.tarefa.descricao} by #{tarefaController.tarefa.colaborador.nome}"/>
 
                 <a4j:outputPanel id="panelLogsTarefa">
+
                     <rich:dataTable id="logsTarefas" value="#{tarefaController.logsDaTarefaSelecionada}" var="tarefas">
 
                         <rich:column>
@@ -156,9 +159,12 @@
                         </rich:column>
 
                     </rich:dataTable>
+
                 </a4j:outputPanel>
 
             </rich:popupPanel>
+
         </ui:define> 
+
     </ui:composition>
 </html>
