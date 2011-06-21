@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <ui:composition template="/templates/templateMaster.xhtml">
+        <ui:define name="content">
+
+            <h:panelGrid width="900" columns="4">
+
+                <h:outputText value="Status:"/>
+                <rich:select id="statusFiltro" value="#{tarefaController.tarefa.status}">
+                    <f:selectItem itemValue="1" itemLabel="Em Andamento" />
+                    <f:selectItem itemValue="2" itemLabel="Aguardando Retorno" />
+                    <f:selectItem itemValue="3" itemLabel="Finalizada" />
+                    <f:selectItem itemValue="4" itemLabel="Cancelada" />
+                </rich:select>
+
+                <h:outputText value="Colaborador:"/>
+                <rich:select id="colaboradorFiltro" value="#{tarefaController.tarefa.colaborador}" converter="#{colaboradorConverter}">
+                    <f:selectItems value="#{tarefaController.colaboradores}" var="colaborador" itemLabel="#{colaborador.nome}" itemValue="#{colaborador.nome}"/> 
+                </rich:select>
+
+                <h:outputText value="Projeto:"/>
+                <rich:select id="projetoFiltro" value="#{tarefaController.tarefa.projeto}" converter="#{projetoConverter}">
+                    <f:selectItems value="#{tarefaController.projetos}" var="projeto" itemLabel="#{projeto.nome}" itemValue="#{projeto.nome}"/> 
+                </rich:select>
+
+                <a4j:commandButton value="Filtrar" render="panel" execute="statusFiltro,colaboradorFiltro,projetoFiltro"/>
+            </h:panelGrid>
+
+
+            <a4j:outputPanel id="panel">
+                <rich:dataTable id="tarefas" value="#{tarefaController.tarefas}" var="tarefas">
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.id}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Projeto"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.projeto.nome}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Colaborador"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.colaborador.nome}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Descrição"/>
+                        </f:facet>
+                        <h:commandLink value="#{tarefas.descricao}" action="#{tarefaController.editarTarefa()}">
+                            <f:setPropertyActionListener target="#{tarefaController.tarefa}" value="#{tarefas}"/> 
+                        </h:commandLink>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Status"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.statusDesc}"/>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Data Inicial"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.dataInicial}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Data Final"/>
+                        </f:facet>
+                        <h:outputText value="#{tarefas.dataFinal}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Novo Status"/>
+                        </f:facet>
+                        <h:commandButton value="Novo Status" rendered="#{!tarefas.tarefaEstaFinalizada}" action="#{tarefaController.novoStatus()}">
+                            <f:setPropertyActionListener target="#{tarefaController.tarefa}" value="#{tarefas}"/> 
+                        </h:commandButton>
+                    </rich:column>
+
+                    <rich:column>
+                        <f:facet name="header"> 
+                            <h:outputText value="Log"/>
+                        </f:facet>
+                        <a4j:commandLink id="visualizarLog" value="Visualizar Log" oncomplete="#{rich:component('popup')}.show()" render="popup">
+                            <f:setPropertyActionListener target="#{tarefaController.tarefa}" value="#{tarefas}"/> 
+                        </a4j:commandLink>
+
+                    </rich:column>
+
+
+                </rich:dataTable>
+
+
+            </a4j:outputPanel>
+            <rich:popupPanel id="popup" resizeable="true">
+                <f:facet name="header">
+                    <h:outputText value="Log(s) da(s) Tarefa(s)" />
+                </f:facet>
+                <f:facet name="controls">
+                    <h:outputLink value="#"
+                                  onclick="#{rich:component('popup')}.hide(); return false;">
+                        X
+                    </h:outputLink>
+                </f:facet>
+
+                <h:outputText value="Tarefa #{tarefaController.tarefa.descricao} by #{tarefaController.tarefa.colaborador.nome}"/>
+
+                <a4j:outputPanel id="panelLogsTarefa">
+                    <rich:dataTable id="logsTarefas" value="#{tarefaController.logsDaTarefaSelecionada}" var="tarefas">
+
+                        <rich:column>
+                            <f:facet name="header"> 
+                                <h:outputText value="id"/>
+                            </f:facet>
+                            <h:outputText value="#{tarefas.id}"/>
+                        </rich:column>
+
+                        <rich:column>
+                            <f:facet name="header"> 
+                                <h:outputText value="Log"/>
+                            </f:facet>
+                            <h:outputText value="#{tarefas.log}"/>
+                        </rich:column>
+
+                        <rich:column>
+                            <f:facet name="header"> 
+                                <h:outputText value="Data do Log"/>
+                            </f:facet>
+                            <h:outputText value="#{tarefas.dataLog}">
+                                <f:convertDateTime pattern="dd/MM/yyyy  HH:mm" locale="pt,BR" timeZone="America/Sao_Paulo"/>
+                            </h:outputText>
+                        </rich:column>
+
+                    </rich:dataTable>
+                </a4j:outputPanel>
+
+            </rich:popupPanel>
+        </ui:define> 
+    </ui:composition>
+</html>
