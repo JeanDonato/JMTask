@@ -5,6 +5,7 @@
 package br.com.jmtask.dao;
 
 import br.com.jmtask.entity.Projeto;
+import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ import javax.transaction.UserTransaction;
  *
  * @author jeandonato
  */
-public class ProjetoDao {
+public class ProjetoDao implements Serializable{
 
     @PersistenceContext
     private EntityManager em;

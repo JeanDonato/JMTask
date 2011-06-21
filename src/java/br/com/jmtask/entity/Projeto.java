@@ -5,12 +5,17 @@
 package br.com.jmtask.entity;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -27,37 +32,46 @@ public class Projeto implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nome;
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date dataInicio;
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date dataFim;
-//    @ManyToMany
-//    private List<Colaborador> colaboradores;
-//    private char status;
+    @ManyToMany
+    private List<Colaborador> colaboradores;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataInicio;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataFim;
+    private String status;
 
-//    public List<Colaborador> getColaboradores() {
-//        return colaboradores;
-//    }
-//
-//    public void setColaboradores(List<Colaborador> colaboradores) {
-//        this.colaboradores = colaboradores;
-//    }
-//    public Date getDataFim() {
-//        return dataFim;
-//    }
-//
-//    public void setDataFim(Date dataFim) {
-//        this.dataFim = dataFim;
-//    }
-//
-//    public Date getDataInicio() {
-//        return dataInicio;
-//    }
-//
-//    public void setDataInicio(Date dataInicio) {
-//        this.dataInicio = dataInicio;
-//    }
-//
+    public Date getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(Date dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    public Date getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(Date dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+    
+    public List<Colaborador> getColaboradores() {
+        return colaboradores;
+    }
+
+    public void setColaboradores(List<Colaborador> colaboradores) {
+        this.colaboradores = colaboradores;
+    }
+    
     public Long getId() {
         return id;
     }
@@ -74,14 +88,6 @@ public class Projeto implements Serializable {
         this.nome = nome;
     }
 
-//    public char getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(char status) {
-//        this.status = status;
-//    }
-//
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
