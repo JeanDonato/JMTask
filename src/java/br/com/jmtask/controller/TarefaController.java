@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -38,6 +39,8 @@ public class TarefaController implements Serializable {
     private LogTarefa logTarefa = new LogTarefa();
     private List<LogTarefa> logsDaTarefaSelecionada;
     @Inject
+    private Conversation conversation;
+    @Inject
     ColaboradorDao colaboradorDao;
     @Inject
     ProjetoDao projetoDao;
@@ -47,6 +50,14 @@ public class TarefaController implements Serializable {
     Map parametros = new HashMap();
     String mensagem = "";
     private boolean tarefaPodeSerEditada;
+
+    public Conversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
+    }
 
     public boolean isTarefaPodeSerEditada() {
         if (!tarefa.getStatus().equals("3")) {
@@ -101,8 +112,11 @@ public class TarefaController implements Serializable {
                 tarefa = new Tarefa();
             } else {
 //                setando esses atributos, pois, eles não estão na tela. Assim não veem para o servidor, sendo necessário fazer isso, ou colocar campo hidden na view
-                tarefaOld = getTarefa(tarefa.getId());
-                tarefa.setColaborador(tarefaOld.getColaborador());
+                getTarefa(tarefa.getId());
+
+                if (tarefa.getColaborador() == null) {
+                    tarefa.setColaborador(tarefaOld.getColaborador());
+                }
                 tarefa.setProjeto(tarefaOld.getProjeto());
                 tarefa.setDataInicial(tarefaOld.getDataInicial());
                 //se tiver finalizando a tarefa...
@@ -113,10 +127,11 @@ public class TarefaController implements Serializable {
                 SalvarLog();
                 mensagem = "Tarefa Atualizada com Sucesso!";
             }
-
+            limpar();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(mensagem));
             getTarefas();
-            return "listaTarefas";
+
+            return "/listTarefa.xhtml";
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,6 +139,10 @@ public class TarefaController implements Serializable {
         }
     }
 
+//    public String teste(){
+//        String x = "é nóis";
+//        return x;
+//    }
     public void SalvarLog() {
         try {
             logTarefa.setTarefa(tarefa);
@@ -132,6 +151,10 @@ public class TarefaController implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void limpar() {
+        tarefa = null;
     }
 
     public List<Tarefa> getTarefas() {
@@ -196,40 +219,4 @@ public class TarefaController implements Serializable {
     public String novoStatus() {
         return "/novoStatusTarefa.xhtml";
     }
-//    public void removerTarefa(Tarefa tarefa) {
-//        try {
-//            ut.begin();
-//            em.remove(em.getReference(Tarefa.class, tarefa.getId()));
-//            ut.commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        getTarefaes();
-//    }
-//
-//    public Tarefa findByNome(String nomeTarefa) {
-//        Query query = em.createNamedQuery("Tarefa.verifTarefa");
-//        query.setParameter("nomeTarefa", nomeTarefa);
-//        try {
-//            tarefa = (Tarefa) query.getSingleResult();
-//        } catch (NoResultException nre) {
-//            nomeTarefa = "";
-//        }
-//        return tarefa;
-//    }
-//
-//    public boolean existeTarefa(String nomeTarefa) {
-//        Query query = em.createNamedQuery("Tarefa.verifTarefa");
-//        query.setParameter("nomeTarefa", nomeTarefa);
-//        try {
-//            tarefa = (Tarefa) query.getSingleResult();
-//        } catch (NoResultException nre) {
-//            nomeTarefa = "";
-//        }
-//        if (!nomeTarefa.equals("")) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 }

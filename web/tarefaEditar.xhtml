@@ -16,7 +16,12 @@
                 <h:inputHidden id="id" value="#{tarefaController.tarefa.id}" />
 
                 <h:outputText value="Colaborador:"/>
-                <h:inputText id="colaborador" value="#{tarefaController.tarefa.colaborador.nome}" converter="#{colaboradorConverter}" disabled="true"/> 
+                <h:panelGroup>
+                    <h:inputText id="colaborador" value="#{tarefaController.tarefa.colaborador.nome}" converter="#{colaboradorConverter}" disabled="true" rendered="#{not empty tarefaController.tarefa.colaborador.nome}"/> 
+                    <rich:select value="#{tarefaController.tarefa.colaborador}" converter="#{colaboradorConverter}" rendered="#{empty tarefaController.tarefa.colaborador.nome}">
+                        <f:selectItems value="#{tarefaController.colaboradores}" var="colaborador" itemLabel="#{colaborador.nome}" itemValue="#{colaborador.nome}"/>
+                    </rich:select>
+                </h:panelGroup>
                 <rich:message for="colaborador"/>
 
                 <h:outputText value="Projeto:"/>
@@ -36,6 +41,10 @@
                 <rich:message for="obs"/>
 
             </h:panelGrid>
+            <center>
+                <h:commandButton value="Salvar" action="#{tarefaController.salvar()}"/>
+                <h:commandButton value="Voltar" action="listTarefa"/>
+            </center>
         </ui:define>
     </ui:composition>
 </html>
