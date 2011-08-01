@@ -121,7 +121,7 @@ public class ProjetoController implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (conversation.isTransient()) {
+        if (!conversation.isTransient()) {
             conversation.end();
         }
     }

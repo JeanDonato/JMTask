@@ -6,6 +6,7 @@ package br.com.jmtask.dao;
 
 import br.com.jmtask.entity.LogTarefa;
 import br.com.jmtask.entity.Tarefa;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -19,7 +20,7 @@ import javax.transaction.UserTransaction;
  * @author jeandonato
  * 
  */
-public class TarefaDao {
+public class TarefaDao  implements Serializable{
 
     @PersistenceContext
     private EntityManager em;
